@@ -1,0 +1,75 @@
+﻿@model IEnumerable<BlogDemo.Models.Post> 
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="container mt-4">
+    <h2>Latest Blog Posts</h2>
+
+    @if (Model.Any())
+    {
+        <ul class="list-group">
+            @foreach (var post in Model)
+            {
+                <li class="list-group-item">
+                    <h3>@post.Title</h3>
+                    <!-- Render the ContentHtml property as raw HTML -->
+                    <div class="markdown-content">@Html.Raw(post.ContentHtml)</div>
+                    <small>Posted on @post.CreatedAt.ToString("MMM dd, yyyy")</small>
+                </li>
+            }
+        </ul>
+
+        <div class="pagination mt-4">
+            @if (ViewData["CurrentPage"] is int currentPage && ViewData["TotalPages"] is int totalPages)
+            {
+                <ul class="pagination">
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    }
+    else
+    {
+        <p>No blog posts found.</p>
+    }
+</div>
+
+<style>
+    .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+        color: #2c3e50;
+    }
+
+    .markdown-content p {
+        font-size: 1.2em;
+        line-height: 1.5;
+    }
+
+    .markdown-content ul {
+        list-style-type: disc;
+        margin-left: 20px;
+    }
+
+    .markdown-content code {
+        background-color: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .markdown-content img {
+        max-width: 100%; /* Makes the image scale down to fit the container */
+        height: auto; /* Keeps the image aspect ratio */
+        display: block; /* Removes extra space below the image */
+        margin: 0 auto; /* Centers the image within the container */
+    }
+</style>

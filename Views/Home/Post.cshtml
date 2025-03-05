@@ -1,0 +1,94 @@
+﻿@model BlogDemo.Models.Post
+
+@{
+    ViewData["Title"] = Model.Title;
+    double averageRating = ViewData["AverageRating"] != null ? (double)ViewData["AverageRating"] : 0;
+}
+
+<div class="container mt-4">
+
+    <!-- Back Button (Top) -->
+    <div class="d-flex justify-content-end">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+    </div>
+
+    <!-- Blog Post -->
+    <h2>
+        @Model.Title <span class="text-warning">
+            @for (int i = 0; i < 5; i++)
+            {
+                if (i < Model.AverageRating)
+                {
+                    <i class="fas fa-star"></i>
+                }
+                else
+                {
+                    <i class="far fa-star"></i>
+                }
+            }
+        </span>
+    </h2>
+    <p><small>Posted on @Model.CreatedAt.ToString("MMM dd, yyyy")</small></p>
+
+    <div class="markdown-content">@Html.Raw(Model.ContentHtml)</div>
+
+    <!-- Back Button (Bottom) -->
+    <div class="d-flex justify-content-end mt-4">
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+    </div>
+
+    <hr>
+
+    <!-- Comments Section -->
+    <h3>Comments</h3>
+
+    @if (Model.Comments.Any())
+    {
+        <ul class="list-group">
+            @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+            {
+                <li class="list-group-item">
+                    <strong>@comment.UserName</strong> <small class="text-muted">(@comment.CreatedAt.ToString("MMM dd, yyyy HH:mm"))</small>
+                    <p>@comment.Text</p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No comments yet. Be the first to comment!</p>
+    }
+
+    <!-- Comment Form -->
+    <h4 class="mt-4">Add a Comment</h4>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form method="post" action="@Url.Action("AddComment", "Home")">
+        <input type="hidden" name="postId" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="userName" class="form-label">Your Name</label>
+            <input type="text" class="form-control" id="userName" name="userName" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="text" class="form-label">Your Comment</label>
+            <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<style>
+    .markdown-content img {
+        width: 100%; /* Makes the image scale down to fit the container */
+        max-width: 500px; /* Makes the image scale down to fit the container */
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+</style>

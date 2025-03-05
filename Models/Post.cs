@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Markdig;
+using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
@@ -14,8 +16,13 @@ namespace BlogDemo.Models
 
         [Required]
         public string ContentMarkdown { get; set; }
-        [NotMapped]
-        public string ContentHtml { get; set; } 
+        public string ContentHtml
+        {
+            get
+            {
+                return Markdown.ToHtml(ContentMarkdown);
+            }
+        }
 
 
         public string Author { get; set; } // Author name
@@ -24,6 +31,13 @@ namespace BlogDemo.Models
         public DateTime CreatedAt { get; set; }
 
         public ICollection<UserRating> Ratings { get; set; }
+        public double AverageRating
+        {
+            get
+            {
+                return Ratings != null && Ratings.Any() ? Ratings.Average(r => r.Rating) : 0;
+            }
+        }
         public ICollection<Comment> Comments { get; set; }
 
     }

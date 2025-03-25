@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogDemo.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogDemo.Controllers
 {
+    [Authorize]
     public class PostsController : Controller
     {
         private readonly BlogContext _context;

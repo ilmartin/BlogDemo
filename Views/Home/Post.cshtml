@@ -7,12 +7,10 @@
 
 <div class="container mt-4">
 
-    <!-- Back Button (Top) -->
     <div class="d-flex justify-content-end">
         <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
     </div>
 
-    <!-- Blog Post -->
     <h2>
         @Model.Title <span class="text-warning">
             @for (int i = 0; i < 5; i++)
@@ -32,16 +30,25 @@
 
     <div class="markdown-content">@Html.Raw(Model.ContentHtml)</div>
 
-    <!-- Back Button (Bottom) -->
-    <div class="d-flex justify-content-end mt-4">
-        <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
-    </div>
+    <hr>
+
+    <!-- Rating System -->
+    <h4>Rate this Post</h4>
+    <form method="post" action="@Url.Action("RatePost", "Home")">
+        <input type="hidden" name="postId" value="@Model.Id" />
+        <div class="rating">
+            @for (int i = 5; i >= 1; i--)
+            {
+                <input type="radio" id="star-@i" name="rating" value="@i" required>
+                <label for="star-@i" class="star">&#9733;</label>
+            }
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit Rating</button>
+    </form>
 
     <hr>
 
-    <!-- Comments Section -->
     <h3>Comments</h3>
-
     @if (Model.Comments.Any())
     {
         <ul class="list-group">
@@ -59,7 +66,6 @@
         <p>No comments yet. Be the first to comment!</p>
     }
 
-    <!-- Comment Form -->
     <h4 class="mt-4">Add a Comment</h4>
     @if (TempData["Error"] != null)
     {
@@ -85,10 +91,33 @@
 
 <style>
     .markdown-content img {
-        width: 100%; /* Makes the image scale down to fit the container */
-        max-width: 500px; /* Makes the image scale down to fit the container */
+        width: 100%;
+        max-width: 500px;
         height: auto;
         display: block;
         margin: 0 auto;
     }
+
+
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+    }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            color: #ddd;
+            font-size: 2.5rem;
+            cursor: pointer;
+        }
+
+            .rating input:checked ~ label,
+            .rating label:hover,
+            .rating label:hover ~ label {
+                color: gold;
+            }
 </style>

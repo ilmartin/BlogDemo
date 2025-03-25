@@ -14,9 +14,6 @@ namespace BlogDemo.Models
         [Required, Range(1, 5)]
         public int Rating { get; set; } // Rating from 1 to 5
 
-        [Required]
-        public string UserName { get; set; } // Name of the user who rated
-
         [ForeignKey("PostId")]
         public Post Post { get; set; }
 

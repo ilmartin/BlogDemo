@@ -83,4 +83,25 @@ public class HomeController : Controller
 
         return RedirectToAction("Post", new { id = postId });
     }
+
+    [HttpPost]
+    public IActionResult RatePost(int postId, int rating)
+    {
+        if (rating < 1 || rating > 5)
+        {
+            TempData["Error"] = "Invalid rating value.";
+            return RedirectToAction("Post", new { id = postId });
+        }
+
+        var userRating = new UserRating
+        {
+            PostId = postId,
+            Rating = rating
+        };
+
+        _context.Ratings.Add(userRating);
+        _context.SaveChanges();
+
+        return RedirectToAction("Post", new { id = postId });
+    }
 }
